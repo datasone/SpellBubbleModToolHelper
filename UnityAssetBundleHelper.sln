@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31005.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpellBubbleMusicEnablePatcher", "UnityAssetBundleHelper\SpellBubbleMusicEnablePatcher.csproj", "{A46F308C-737A-42EA-8E84-A07B0D4DB965}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpellBubbleModToolHelper", "SpellBubbleModToolHelper\SpellBubbleModToolHelper.csproj", "{2BB78ACD-539E-4417-9D86-C0AD7B1F22B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssetsTools.NET", "deps\AssetsTools.NET\AssetTools.NET\AssetsTools.NET.csproj", "{F7EB45B7-51EF-4729-ABBC-BEA0DF2492C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VGAudio", "deps\VGAudio\src\VGAudio\VGAudio.csproj", "{DFB351A1-5234-4CC0-B3B1-89A6509DE624}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SonicAudioLib", "deps\SonicAudioTools\Source\SonicAudioLib\SonicAudioLib.csproj", "{63138773-1F47-474C-9345-15EB6183ECC6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A46F308C-737A-42EA-8E84-A07B0D4DB965}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A46F308C-737A-42EA-8E84-A07B0D4DB965}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A46F308C-737A-42EA-8E84-A07B0D4DB965}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A46F308C-737A-42EA-8E84-A07B0D4DB965}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BB78ACD-539E-4417-9D86-C0AD7B1F22B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BB78ACD-539E-4417-9D86-C0AD7B1F22B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BB78ACD-539E-4417-9D86-C0AD7B1F22B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BB78ACD-539E-4417-9D86-C0AD7B1F22B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7EB45B7-51EF-4729-ABBC-BEA0DF2492C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7EB45B7-51EF-4729-ABBC-BEA0DF2492C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7EB45B7-51EF-4729-ABBC-BEA0DF2492C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7EB45B7-51EF-4729-ABBC-BEA0DF2492C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFB351A1-5234-4CC0-B3B1-89A6509DE624}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFB351A1-5234-4CC0-B3B1-89A6509DE624}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFB351A1-5234-4CC0-B3B1-89A6509DE624}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFB351A1-5234-4CC0-B3B1-89A6509DE624}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63138773-1F47-474C-9345-15EB6183ECC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63138773-1F47-474C-9345-15EB6183ECC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63138773-1F47-474C-9345-15EB6183ECC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63138773-1F47-474C-9345-15EB6183ECC6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D0F72077-109D-4A3B-973D-10D5BDB1FF3A}
+	EndGlobalSection
+EndGlobal
