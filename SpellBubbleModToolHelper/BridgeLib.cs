@@ -503,6 +503,7 @@ namespace SpellBubbleModToolHelper
             var songEntries = WrapperToArray_Struct<SongEntry>(param);
 
             var musicFieldList = musicBaseField.Get("sheets").Get(0).Get(0).Get("list").Get(0).GetChildrenList();
+            var maxRelease = musicFieldList.Select(f => f.Get("Release").GetValue().AsInt()).Max();
 
             var wordFieldArray = wordBaseField.Get("sheets").Get(0).GetChildrenList();
             var titleFieldList = Array.Find(wordFieldArray,
@@ -553,6 +554,7 @@ namespace SpellBubbleModToolHelper
                 musicSongField.Get("DurationSec").GetValue().Set((int) (musicEntry.durationSec * 100) / 100.0);
                 musicSongField.Get("Offset").GetValue().Set(musicEntry.offset);
                 musicSongField.Get("IsBPMChange").GetValue().Set(musicEntry.isBPMChange);
+                musicSongField.Get("Release").GetValue().Set(maxRelease);
 
                 var titleSongField = Array.Find(titleFieldList, f => f.Get("key").GetValue().AsString() == songID);
                 var subTitleSongField =
