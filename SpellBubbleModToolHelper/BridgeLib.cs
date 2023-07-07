@@ -441,6 +441,7 @@ namespace SpellBubbleModToolHelper
             public byte starsEasy;
             public byte starsNormal;
             public byte starsHard;
+            public byte isBPMChange;
             public ushort bpm;
             public ushort length;
             public float durationSec;
@@ -453,8 +454,10 @@ namespace SpellBubbleModToolHelper
             public IntPtr lang;
             public IntPtr title;
             public IntPtr subTitle;
+            public IntPtr titleKana;
             public IntPtr artist;
             public IntPtr artist2;
+            public IntPtr artistKana;
             public IntPtr original;
         }
 
@@ -463,8 +466,10 @@ namespace SpellBubbleModToolHelper
             public readonly string lang;
             public readonly string title;
             public readonly string subTitle;
+            public readonly string titleKana;
             public readonly string artist;
             public readonly string artist2;
+            public readonly string artistKana;
             public readonly string original;
 
             public WordEntryStr(WordEntry wordEntry)
@@ -472,14 +477,16 @@ namespace SpellBubbleModToolHelper
                 lang = Marshal.PtrToStringUTF8(wordEntry.lang);
                 title = Marshal.PtrToStringUTF8(wordEntry.title);
                 subTitle = Marshal.PtrToStringUTF8(wordEntry.subTitle);
+                titleKana = Marshal.PtrToStringUTF8(wordEntry.titleKana);
                 artist = Marshal.PtrToStringUTF8(wordEntry.artist);
                 artist2 = Marshal.PtrToStringUTF8(wordEntry.artist2);
+                artistKana = Marshal.PtrToStringUTF8(wordEntry.artistKana);
                 original = Marshal.PtrToStringUTF8(wordEntry.original);
             }
         }
 
-        [UnmanagedCallersOnly(EntryPoint = "patch_share_data_res")]
-        public static void PatchShareDataRes(IntPtr shareDataPathPtr, IntPtr outShareDataPathPtr, ArrayWrapper param)
+        [UnmanagedCallersOnly(EntryPoint = "patch_share_data_music_data")]
+        public static void PatchShareDataMusicData(IntPtr shareDataPathPtr, IntPtr outShareDataPathPtr, ArrayWrapper param)
         {
             var shareDataPath = Marshal.PtrToStringUTF8(shareDataPathPtr);
             var outShareDataPath = Marshal.PtrToStringUTF8(outShareDataPathPtr);
@@ -502,10 +509,14 @@ namespace SpellBubbleModToolHelper
                 a => a.Get("name").GetValue().AsString() == "MusicTitle").Get("list").Get(0).GetChildrenList();
             var subTitleFieldList = Array.Find(wordFieldArray,
                 a => a.Get("name").GetValue().AsString() == "MusicSubTitle").Get("list").Get(0).GetChildrenList();
+            var titleKanaFieldList = Array.Find(wordFieldArray,
+                a => a.Get("name").GetValue().AsString() == "MusicTitleKana").Get("list").Get(0).GetChildrenList();
             var artistFieldList = Array.Find(wordFieldArray,
                 a => a.Get("name").GetValue().AsString() == "MusicArtist").Get("list").Get(0).GetChildrenList();
             var artist2FieldList = Array.Find(wordFieldArray,
                 a => a.Get("name").GetValue().AsString() == "MusicArtist2").Get("list").Get(0).GetChildrenList();
+            var artistKanaFieldList = Array.Find(wordFieldArray,
+                a => a.Get("name").GetValue().AsString() == "MusicArtistKana").Get("list").Get(0).GetChildrenList();
             var originalFieldList = Array.Find(wordFieldArray,
                 a => a.Get("name").GetValue().AsString() == "MusicOriginal").Get("list").Get(0).GetChildrenList();
 
@@ -539,14 +550,18 @@ namespace SpellBubbleModToolHelper
 
                 musicSongField.Get("BPM").GetValue().Set(musicEntry.bpm);
                 musicSongField.Get("Length").GetValue().Set(musicEntry.length);
-                musicSongField.Get("DurationSec").GetValue().Set((int) (musicEntry.durationSec * 10) / 10.0);
+                musicSongField.Get("DurationSec").GetValue().Set((int) (musicEntry.durationSec * 100) / 100.0);
                 musicSongField.Get("Offset").GetValue().Set(musicEntry.offset);
+                musicSongField.Get("IsBPMChange").GetValue().Set(musicEntry.isBPMChange);
 
                 var titleSongField = Array.Find(titleFieldList, f => f.Get("key").GetValue().AsString() == songID);
                 var subTitleSongField =
                     Array.Find(subTitleFieldList, f => f.Get("key").GetValue().AsString() == songID);
+                var titleKanaSongField =
+                    Array.Find(titleKanaFieldList, f => f.Get("key").GetValue().AsString() == songID);
                 var artistSongField = Array.Find(artistFieldList, f => f.Get("key").GetValue().AsString() == songID);
                 var artist2SongField = Array.Find(artist2FieldList, f => f.Get("key").GetValue().AsString() == songID);
+                var artistKanaSongField = Array.Find(artistKanaFieldList, f => f.Get("key").GetValue().AsString() == songID);
                 var originalSongField =
                     Array.Find(originalFieldList, f => f.Get("key").GetValue().AsString() == songID);
 
@@ -557,8 +572,10 @@ namespace SpellBubbleModToolHelper
                 {
                     titleSongField.Get(wordEntry.lang).GetValue().Set(wordEntry.title);
                     subTitleSongField.Get(wordEntry.lang).GetValue().Set(wordEntry.subTitle);
+                    titleKanaSongField.Get(wordEntry.lang).GetValue().Set(wordEntry.titleKana);
                     artistSongField.Get(wordEntry.lang).GetValue().Set(wordEntry.artist);
                     artist2SongField.Get(wordEntry.lang).GetValue().Set(wordEntry.artist2);
+                    artistKanaSongField.Get(wordEntry.lang).GetValue().Set(wordEntry.artistKana);
                     originalSongField.Get(wordEntry.lang).GetValue().Set(wordEntry.original);
                 }
             }
