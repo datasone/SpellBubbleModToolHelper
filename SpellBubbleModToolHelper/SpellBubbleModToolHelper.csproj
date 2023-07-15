@@ -4,11 +4,9 @@
     <TargetFramework>net7.0</TargetFramework>
     <IlcOptimizationPreference>Speed</IlcOptimizationPreference>
     <Configurations>Debug;Release;RelWithDbgInfo</Configurations>
+    <PublishAot>true</PublishAot>
+    <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="7.0.8" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\deps\AssetsTools.NET\AssetTools.NET\AssetsTools.NET.csproj" />
