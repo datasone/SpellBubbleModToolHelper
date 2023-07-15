@@ -394,22 +394,23 @@ namespace SpellBubbleModToolHelper
             var (am, bundle, assets) = LoadAssetsFromBundlePath(scorePath);
             var replacerList = new List<AssetsReplacer>();
 
+            var beatScript = paramStrArray[0];
             var info = assets.table.GetAssetInfo($"{songID}_beat");
             var baseField = am.GetTypeInstance(assets.file, info).GetBaseField();
-            baseField.Get("m_Script").GetValue().Set("");
+            baseField.Get("m_Script").GetValue().Set("\uFEFF" + beatScript);
             var newBytes = baseField.WriteToByteArray();
             var assetsReplacer = new AssetsReplacerFromMemory(0, info.index, (int) info.curFileType,
                 AssetHelper.GetScriptIndex(assets.file, info), newBytes);
             replacerList.Add(assetsReplacer);
 
-            for (var i = 0; i < paramStrArray.Length; i += 2)
+            for (var i = 1; i < paramStrArray.Length; i += 2)
             {
                 var difficulty = paramStrArray[i];
                 var script = paramStrArray[i + 1];
 
                 info = assets.table.GetAssetInfo($"{songID}_rhythm_{difficulty}");
                 baseField = am.GetTypeInstance(assets.file, info).GetBaseField();
-                baseField.Get("m_Script").GetValue().Set(script);
+                baseField.Get("m_Script").GetValue().Set("\uFEFF" + script);
                 newBytes = baseField.WriteToByteArray();
                 assetsReplacer = new AssetsReplacerFromMemory(0, info.index, (int) info.curFileType,
                     AssetHelper.GetScriptIndex(assets.file, info), newBytes);
@@ -555,6 +556,9 @@ namespace SpellBubbleModToolHelper
                 musicSongField.Get("Offset").GetValue().Set(musicEntry.offset);
                 musicSongField.Get("IsBPMChange").GetValue().Set(musicEntry.isBPMChange);
                 musicSongField.Get("Release").GetValue().Set(maxRelease);
+                musicSongField.Get("DLCIndex").GetValue().Set(0);
+                musicSongField.Get("IsDefault").GetValue().Set(1);
+                musicSongField.Get("Price").GetValue().Set(0);
 
                 var titleSongField = Array.Find(titleFieldList, f => f.Get("key").GetValue().AsString() == songID);
                 var subTitleSongField =
