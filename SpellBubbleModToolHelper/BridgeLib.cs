@@ -268,7 +268,6 @@ namespace SpellBubbleModToolHelper
                 using (var reader = new AssetsFileReader(newStream))
                 {
                     var newBundle = new AssetBundleFile();
-                    newBundle.Read(new AssetsFileReader(newStream), false);
                     newBundle.Pack(reader, bundleWriter, AssetBundleCompressionType.LZMA, false);
                 }
             }
@@ -397,7 +396,7 @@ namespace SpellBubbleModToolHelper
             var beatScript = paramStrArray[0];
             var info = assets.table.GetAssetInfo($"{songID}_beat");
             var baseField = am.GetTypeInstance(assets.file, info).GetBaseField();
-            baseField.Get("m_Script").GetValue().Set("\uFEFF" + beatScript);
+            baseField.Get("m_Script").GetValue().Set(Encoding.Unicode.GetBytes("\uFEFF" + beatScript));
             var newBytes = baseField.WriteToByteArray();
             var assetsReplacer = new AssetsReplacerFromMemory(0, info.index, (int) info.curFileType,
                 AssetHelper.GetScriptIndex(assets.file, info), newBytes);
@@ -410,7 +409,7 @@ namespace SpellBubbleModToolHelper
 
                 info = assets.table.GetAssetInfo($"{songID}_rhythm_{difficulty}");
                 baseField = am.GetTypeInstance(assets.file, info).GetBaseField();
-                baseField.Get("m_Script").GetValue().Set("\uFEFF" + script);
+                baseField.Get("m_Script").GetValue().Set(Encoding.Unicode.GetBytes("\uFEFF" + script));
                 newBytes = baseField.WriteToByteArray();
                 assetsReplacer = new AssetsReplacerFromMemory(0, info.index, (int) info.curFileType,
                     AssetHelper.GetScriptIndex(assets.file, info), newBytes);
