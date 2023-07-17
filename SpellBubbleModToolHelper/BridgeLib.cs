@@ -269,7 +269,7 @@ namespace SpellBubbleModToolHelper
                 {
                     var newBundle = new AssetBundleFile();
                     newBundle.Read(new AssetsFileReader(newStream), false);
-                    newBundle.Pack(reader, bundleWriter, AssetBundleCompressionType.LZMA);
+                    newBundle.Pack(reader, bundleWriter, AssetBundleCompressionType.LZMA, false);
                 }
             }
         }
