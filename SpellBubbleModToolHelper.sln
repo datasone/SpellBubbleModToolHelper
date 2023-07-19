@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31005.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpellBubbleMusicEnablePatcher", "UnityAssetBundleHelper\SpellBubbleMusicEnablePatcher.csproj", "{A46F308C-737A-42EA-8E84-A07B0D4DB965}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpellBubbleModToolHelper", "SpellBubbleModToolHelper\SpellBubbleModToolHelper.csproj", "{2BB78ACD-539E-4417-9D86-C0AD7B1F22B7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssetsTools.NET", "deps\AssetsTools.NET\AssetTools.NET\AssetsTools.NET.csproj", "{F7EB45B7-51EF-4729-ABBC-BEA0DF2492C5}"
@@ -19,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A46F308C-737A-42EA-8E84-A07B0D4DB965}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A46F308C-737A-42EA-8E84-A07B0D4DB965}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A46F308C-737A-42EA-8E84-A07B0D4DB965}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A46F308C-737A-42EA-8E84-A07B0D4DB965}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2BB78ACD-539E-4417-9D86-C0AD7B1F22B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2BB78ACD-539E-4417-9D86-C0AD7B1F22B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2BB78ACD-539E-4417-9D86-C0AD7B1F22B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
