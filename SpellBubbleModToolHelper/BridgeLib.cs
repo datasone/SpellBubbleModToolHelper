@@ -213,7 +213,7 @@ namespace SpellBubbleModToolHelper
                     {
                         leftFlag = true;
                     }
-            
+
                     if (!excludedDLCIds.Contains(musicItem.Get("DLCIndex").GetValue().AsInt()))
                     {
                         musicItem.Get("DLCIndex").GetValue().Set(0);
@@ -222,7 +222,7 @@ namespace SpellBubbleModToolHelper
             }
 
             if (leftFlag) return;
-            
+
             var fallBackItem = Array.Find(musicList, field => field.Get("ID").GetValue().AsString() == fallBackID);
             fallBackItem.Get("IsDefault").GetValue().Set(0);
             fallBackItem.Get("Price").GetValue().Set(1000);
@@ -239,7 +239,7 @@ namespace SpellBubbleModToolHelper
                 {
                     continue;
                 }
-                
+
                 if (characterItem.Get("DLCIndex").GetValue().AsInt() != 0)
                 {
                     characterItem.Get("DLCIndex").GetValue().Set(characterTargetDLC);
@@ -347,10 +347,10 @@ namespace SpellBubbleModToolHelper
                     }
                 }
             }
-            
+
             acbFile.Rows[0]["AwbFile"] = null;
             acbFile.Rows[0]["StreamAwbAfs2Header"] = null;
-            
+
             if (cpkMode)
             {
                 extCpkArchive.Save(awbOutPath, 4096);
@@ -358,7 +358,7 @@ namespace SpellBubbleModToolHelper
             else
             {
                 extAfs2Archive.Save(awbOutPath, 4096);
-                
+
                 if (Encoding.UTF8.GetString(streamAwbAfs2Header, 0, 4) == "@UTF")
                 {
                     var headerTable = new CriTable();
@@ -486,7 +486,8 @@ namespace SpellBubbleModToolHelper
         }
 
         [UnmanagedCallersOnly(EntryPoint = "patch_share_data_music_data")]
-        public static void PatchShareDataMusicData(IntPtr shareDataPathPtr, IntPtr outShareDataPathPtr, ArrayWrapper param)
+        public static void PatchShareDataMusicData(IntPtr shareDataPathPtr, IntPtr outShareDataPathPtr,
+            ArrayWrapper param)
         {
             var shareDataPath = Marshal.PtrToStringUTF8(shareDataPathPtr);
             var outShareDataPath = Marshal.PtrToStringUTF8(outShareDataPathPtr);
@@ -566,7 +567,8 @@ namespace SpellBubbleModToolHelper
                     Array.Find(titleKanaFieldList, f => f.Get("key").GetValue().AsString() == songID);
                 var artistSongField = Array.Find(artistFieldList, f => f.Get("key").GetValue().AsString() == songID);
                 var artist2SongField = Array.Find(artist2FieldList, f => f.Get("key").GetValue().AsString() == songID);
-                var artistKanaSongField = Array.Find(artistKanaFieldList, f => f.Get("key").GetValue().AsString() == songID);
+                var artistKanaSongField =
+                    Array.Find(artistKanaFieldList, f => f.Get("key").GetValue().AsString() == songID);
                 var originalSongField =
                     Array.Find(originalFieldList, f => f.Get("key").GetValue().AsString() == songID);
 
