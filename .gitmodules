@@ -1,12 +1,9 @@
 [submodule "deps/AssetsTools.NET"]
 	path = deps/AssetsTools.NET
-	url = https://github.com/nesrak1/AssetsTools.NET
-	ignore = dirty
+	url = https://github.com/datasone/AssetsTools.NET
 [submodule "deps/VGAudio"]
 	path = deps/VGAudio
-	url = https://github.com/Thealexbarney/VGAudio
-	ignore = dirty
+	url = https://github.com/datasone/VGAudio
 [submodule "deps/SonicAudioTools"]
 	path = deps/SonicAudioTools
-	url = https://github.com/blueskythlikesclouds/SonicAudioTools
-	ignore = dirty
+	url = https://github.com/datasone/SonicAudioTools
