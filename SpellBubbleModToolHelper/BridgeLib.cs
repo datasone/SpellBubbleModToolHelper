@@ -344,7 +344,6 @@ namespace SpellBubbleModToolHelper
                 }
             }
 
-            acbFile.Rows[0]["AwbFile"] = null;
             acbFile.Rows[0]["StreamAwbAfs2Header"] = null;
 
             if (cpkMode)
