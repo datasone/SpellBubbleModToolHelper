@@ -433,13 +433,8 @@ namespace SpellBubbleModToolHelper
         public struct MusicEntry
         {
             public IntPtr area;
-            public byte starsEasy;
-            public byte starsNormal;
-            public byte starsHard;
-            public byte isBPMChange;
-            public ushort bpm;
+            public float bpm;
             public ushort length;
-            public float durationSec;
             public float offset;
         }
 
@@ -530,27 +525,10 @@ namespace SpellBubbleModToolHelper
                     musicSongField.Get("Area").GetValue().Set(area);
                 }
 
-                if (musicEntry.starsEasy != 0)
-                {
-                    musicSongField.Get("Level_Easy").GetValue().Set(musicEntry.starsEasy);
-                }
-
-                if (musicEntry.starsNormal != 0)
-                {
-                    musicSongField.Get("Level_Normal").GetValue().Set(musicEntry.starsNormal);
-                }
-
-                if (musicEntry.starsHard != 0)
-                {
-                    musicSongField.Get("Level_Hard").GetValue().Set(musicEntry.starsHard);
-                }
-
                 musicSongField.Get("BPM").GetValue().Set(musicEntry.bpm);
                 musicSongField.Get("Length").GetValue().Set(musicEntry.length);
-                musicSongField.Get("DurationSec").GetValue().Set((int) (musicEntry.durationSec * 100) / 100.0);
                 musicSongField.Get("Offset").GetValue().Set(musicEntry.offset);
-                musicSongField.Get("IsBPMChange").GetValue().Set(musicEntry.isBPMChange);
-                musicSongField.Get("Release").GetValue().Set(maxRelease);
+                musicSongField.Get("Release").GetValue().Set(maxRelease + 1);
                 musicSongField.Get("DLCIndex").GetValue().Set(0);
                 musicSongField.Get("IsDefault").GetValue().Set(1);
                 musicSongField.Get("Price").GetValue().Set(0);
