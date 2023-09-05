@@ -20,6 +20,7 @@ namespace SpellBubbleModToolHelper
         [StructLayout(LayoutKind.Sequential)]
         public struct ArrayWrapper
         {
+            public uint managed;
             public uint size;
             public IntPtr array; // The type of array element is defined as "usize" in Rust
         }
@@ -79,6 +80,171 @@ namespace SpellBubbleModToolHelper
             result[0] = ArrayToWrapper_IntPtr(musicIDs);
             result[1] = ArrayToWrapper_IntPtr(areaIDs);
             return PackWrappers(result[0], result[1]); // Array[Array[String]]
+        }
+
+        [UnmanagedCallersOnly(EntryPoint = "get_dlc_list")]
+        public static ArrayWrapper GetDlcList(IntPtr shareDataPath)
+        {
+            var path = Marshal.PtrToStringUTF8(shareDataPath);
+            var (am, _, assets) = LoadAssetsFromBundlePath(path);
+            var info = assets.table.GetAssetInfo("TPZ_DLCData");
+            var baseField = am.GetTypeInstance(assets.file, info).GetBaseField();
+            var dlcList = baseField.Get("sheets").Get(0).Get(0).Get("list").Get(0).GetChildrenList();
+
+            var dlcNames = dlcList.Select(dlc => dlc.Get("Name").GetValue().AsString()).Select(Marshal.StringToCoTaskMemUTF8).ToArray();
+            return ArrayToWrapper_IntPtr(dlcNames);
+        }
+        
+        [UnmanagedCallersOnly(EntryPoint = "get_music_info")]
+        public static DualArrayWrapper GetMusicInfo(IntPtr romFsPath)
+        {
+            var romFsPathStr = Marshal.PtrToStringUTF8(romFsPath);
+            var shareDataPath = romFsPathStr + "/StreamingAssets/Switch/share_data";
+
+            var (am, _, assets) = LoadAssetsFromBundlePath(shareDataPath);
+            var info = assets.table.GetAssetInfo("TPZ_MusicData");
+            var baseField = am.GetTypeInstance(assets.file, info).GetBaseField();
+            var musicList = baseField.Get("sheets").Get(0).Get(0).Get("list").Get(0).GetChildrenList();
+
+            var ids = new List<string>();
+
+            var musics = musicList.Where(musicItem => musicItem.Get("IsGame").GetValue().AsInt() == 1).Select(
+                musicItem =>
+                {
+                    var id = musicItem.Get("ID").GetValue().AsString();
+                    ids.Add(id);
+
+                    var area = musicItem.Get("Area").GetValue().AsString();
+                    var bpm = musicItem.Get("BPM").GetValue().AsFloat();
+                    var length = musicItem.Get("Length").GetValue().AsInt();
+                    var offset = musicItem.Get("Offset").GetValue().AsFloat();
+                    var dlcIdx = musicItem.Get("DLCIndex").GetValue().AsInt();
+
+                    var wordInfo = assets.table.GetAssetInfo("TPZ_WordData");
+                    var wordBaseField = am.GetTypeInstance(assets.file, wordInfo).GetBaseField();
+
+                    var wordFieldArray = wordBaseField.Get("sheets").Get(0).GetChildrenList();
+                    var titleFieldList = Array.Find(wordFieldArray, a =>
+                        a.Get("name").GetValue().AsString() == "MusicTitle"
+                    ).Get("list").Get(0).GetChildrenList();
+                    var subTitleFieldList = Array.Find(wordFieldArray, a =>
+                        a.Get("name").GetValue().AsString() == "MusicSubTitle"
+                    ).Get("list").Get(0).GetChildrenList();
+                    var titleKanaFieldList = Array.Find(wordFieldArray, a =>
+                        a.Get("name").GetValue().AsString() == "MusicTitleKana"
+                    ).Get("list").Get(0).GetChildrenList();
+                    var artistFieldList = Array.Find(wordFieldArray, a =>
+                        a.Get("name").GetValue().AsString() == "MusicArtist"
+                    ).Get("list").Get(0).GetChildrenList();
+                    var artist2FieldList = Array.Find(wordFieldArray, a =>
+                        a.Get("name").GetValue().AsString() == "MusicArtist2"
+                    ).Get("list").Get(0).GetChildrenList();
+                    var artistKanaFieldList = Array.Find(wordFieldArray, a =>
+                        a.Get("name").GetValue().AsString() == "MusicArtistKana"
+                    ).Get("list").Get(0).GetChildrenList();
+                    var originalFieldList = Array.Find(wordFieldArray, a =>
+                        a.Get("name").GetValue().AsString() == "MusicOriginal"
+                    ).Get("list").Get(0).GetChildrenList();
+
+                    var titleSongField = Array.Find(titleFieldList, f => f.Get("key").GetValue().AsString() == id);
+                    var subTitleSongField =
+                        Array.Find(subTitleFieldList, f => f.Get("key").GetValue().AsString() == id);
+                    var titleKanaSongField =
+                        Array.Find(titleKanaFieldList, f => f.Get("key").GetValue().AsString() == id);
+                    var artistSongField = Array.Find(artistFieldList, f => f.Get("key").GetValue().AsString() == id);
+                    var artist2SongField = Array.Find(artist2FieldList, f => f.Get("key").GetValue().AsString() == id);
+                    var artistKanaSongField =
+                        Array.Find(artistKanaFieldList, f => f.Get("key").GetValue().AsString() == id);
+                    var originalSongField =
+                        Array.Find(originalFieldList, f => f.Get("key").GetValue().AsString() == id);
+
+                    var wordEntryStrs = new[] {"ja", "en", "ko", "chs", "cht"}.Select(lang => new WordEntryStr
+                    {
+                        lang = lang,
+                        title = titleSongField.Get(lang).GetValue().AsString(),
+                        subTitle = subTitleSongField.Get(lang).GetValue().AsString(),
+                        titleKana = titleKanaSongField.Get(lang).GetValue().AsString(),
+                        artist = artistSongField.Get(lang).GetValue().AsString(),
+                        artist2 = artist2SongField.Get(lang).GetValue().AsString(),
+                        artistKana = artistKanaSongField.Get(lang).GetValue().AsString(),
+                        original = originalSongField.Get(lang).GetValue().AsString()
+                    });
+
+                    var wordEntries =
+                        ArrayToWrapper_Struct(wordEntryStrs.Select(wes => new WordEntry(wes, true)).ToArray());
+
+                    var musicEntry = new MusicEntry
+                    {
+                        managed = 1,
+                        area = Marshal.StringToCoTaskMemUTF8(area),
+                        bpm = bpm,
+                        length = (ushort) length,
+                        dlcIdx = (ushort) dlcIdx,
+                        offset = offset
+                    };
+
+                    var songEntry = new SongEntry
+                    {
+                        managed = 1,
+                        id = Marshal.StringToCoTaskMemUTF8(id),
+                        musicEntry = musicEntry,
+                        wordEntry = wordEntries
+                    };
+
+                    return songEntry;
+                });
+
+            var musicsWrapper = ArrayToWrapper_Struct(musics.ToArray());
+
+            var scoreData = new List<List<string>>();
+            foreach (var id in ids)
+            {
+                var songScoreData = new List<string>();
+                var scorePath = romFsPathStr + "/StreamingAssets/Switch/share_scores/score_" + id.ToLower();
+                var (scoreAm, _, scoreAssets) = LoadAssetsFromBundlePath(scorePath);
+
+                try
+                {
+                    foreach (var assetName in new[]
+                                 {$"{id}_beat", $"{id}_rhythm_Easy", $"{id}_rhythm_Normal", $"{id}_rhythm_Hard"})
+                    {
+                        var scoreInfo = scoreAssets.table.GetAssetInfo(assetName);
+                        var scoreBaseField = scoreAm.GetTypeInstance(scoreAssets.file, scoreInfo).GetBaseField();
+
+                        var content = scoreBaseField.Get("m_Script").GetValue().AsStringBytes();
+                        songScoreData.Add(Encoding.Unicode.GetString(content).TrimStart('\uFEFF'));
+                    }
+                }
+                // Some assets are packed using pure lowercase IDs
+                catch (Exception e)
+                {
+                    var newId = id.ToLower();
+                    foreach (var assetName in new[]
+                             {
+                                 $"{newId}_beat", $"{newId}_rhythm_Easy", $"{newId}_rhythm_Normal",
+                                 $"{newId}_rhythm_Hard"
+                             })
+                    {
+                        var scoreInfo = scoreAssets.table.GetAssetInfo(assetName);
+                        var scoreBaseField = scoreAm.GetTypeInstance(scoreAssets.file, scoreInfo).GetBaseField();
+
+                        var content = scoreBaseField.Get("m_Script").GetValue().AsStringBytes();
+                        songScoreData.Add(Encoding.Unicode.GetString(content).TrimStart('\uFEFF'));
+                    }
+                }
+
+                if (songScoreData.Count != 4)
+                {
+                    songScoreData = songScoreData.Take(4).ToList();
+                }
+                
+                scoreData.Add(songScoreData);
+            }
+
+            var scoreDataArray = ArrayToWrapper_Struct(scoreData
+                .Select(song => ArrayToWrapper_IntPtr(song.Select(Marshal.StringToCoTaskMemUTF8).ToArray())).ToArray());
+
+            return PackWrappers(musicsWrapper, scoreDataArray);
         }
 
         private static (AssetsManager, BundleFileInstance, AssetsFileInstance) LoadAssetsFromBundlePath(
@@ -424,6 +590,7 @@ namespace SpellBubbleModToolHelper
         [StructLayout(LayoutKind.Sequential)]
         public struct SongEntry
         {
+            public uint managed;
             public IntPtr id;
             public MusicEntry musicEntry;
             public ArrayWrapper wordEntry;
@@ -432,15 +599,18 @@ namespace SpellBubbleModToolHelper
         [StructLayout(LayoutKind.Sequential)]
         public struct MusicEntry
         {
+            public uint managed;
             public IntPtr area;
             public float bpm;
             public ushort length;
+            public ushort dlcIdx;
             public float offset;
         }
 
         [StructLayout(LayoutKind.Sequential)]
         public struct WordEntry
         {
+            public uint managed;
             public IntPtr lang;
             public IntPtr title;
             public IntPtr subTitle;
@@ -449,18 +619,31 @@ namespace SpellBubbleModToolHelper
             public IntPtr artist2;
             public IntPtr artistKana;
             public IntPtr original;
+
+            public WordEntry(WordEntryStr wordEntryStr, bool managed)
+            {
+                this.managed = (uint) (managed ? 1 : 0);
+                lang = Marshal.StringToCoTaskMemUTF8(wordEntryStr.lang);
+                title = Marshal.StringToCoTaskMemUTF8(wordEntryStr.title);
+                subTitle = Marshal.StringToCoTaskMemUTF8(wordEntryStr.subTitle);
+                titleKana = Marshal.StringToCoTaskMemUTF8(wordEntryStr.titleKana);
+                artist = Marshal.StringToCoTaskMemUTF8(wordEntryStr.artist);
+                artist2 = Marshal.StringToCoTaskMemUTF8(wordEntryStr.artist2);
+                artistKana = Marshal.StringToCoTaskMemUTF8(wordEntryStr.artistKana);
+                original = Marshal.StringToCoTaskMemUTF8(wordEntryStr.original);
+            }
         }
 
-        private readonly struct WordEntryStr
+        public struct WordEntryStr
         {
-            public readonly string lang;
-            public readonly string title;
-            public readonly string subTitle;
-            public readonly string titleKana;
-            public readonly string artist;
-            public readonly string artist2;
-            public readonly string artistKana;
-            public readonly string original;
+            public string lang;
+            public string title;
+            public string subTitle;
+            public string titleKana;
+            public string artist;
+            public string artist2;
+            public string artistKana;
+            public string original;
 
             public WordEntryStr(WordEntry wordEntry)
             {
@@ -585,6 +768,22 @@ namespace SpellBubbleModToolHelper
             }
 
             return array;
+        }
+
+        private static ArrayWrapper ArrayToWrapper_Struct<T>(T[] array)
+        {
+            var arrayPointer = Marshal.AllocCoTaskMem(Marshal.SizeOf<T>() * array.Length);
+
+            for (var i = 0; i < array.Length; ++i)
+            {
+                var obj = array[i];
+                Marshal.StructureToPtr(obj, arrayPointer + i * Marshal.SizeOf<T>(), true);
+            }
+
+            var wrapper = new ArrayWrapper();
+            wrapper.size = (uint) array.Length;
+            wrapper.array = arrayPointer;
+            return wrapper;
         }
 
         [UnmanagedCallersOnly(EntryPoint = "free_dotnet")]
