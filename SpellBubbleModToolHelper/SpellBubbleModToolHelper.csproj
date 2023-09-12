@@ -1,21 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <IlcOptimizationPreference>Speed</IlcOptimizationPreference>
-    <Configurations>Debug;Release;RelWithDbgInfo</Configurations>
-    <PublishAot>true</PublishAot>
-    <IsAotCompatible>true</IsAotCompatible>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <IlcOptimizationPreference>Speed</IlcOptimizationPreference>
+        <Configurations>Debug;Release;RelWithDbgInfo</Configurations>
+        <PublishAot>true</PublishAot>
+        <IsAotCompatible>true</IsAotCompatible>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\deps\AssetsTools.NET\AssetTools.NET\AssetsTools.NET.csproj" />
-    <ProjectReference Include="..\deps\SonicAudioTools\Source\SonicAudioLib\SonicAudioLib.csproj" />
-    <ProjectReference Include="..\deps\VGAudio\src\VGAudio\VGAudio.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\deps\AssetsTools.NET\AssetTools.NET\AssetsTools.NET.csproj"/>
+        <ProjectReference Include="..\deps\Il2CppDumper\Il2CppDumper\Il2CppDumper.csproj"/>
+        <ProjectReference Include="..\deps\SonicAudioTools\Source\SonicAudioLib\SonicAudioLib.csproj"/>
+        <ProjectReference Include="..\deps\VGAudio\src\VGAudio\VGAudio.csproj"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="7.0.9" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="7.0.9"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <RdXmlFile Include="rd.xml"/>
+    </ItemGroup>
 
 </Project>
