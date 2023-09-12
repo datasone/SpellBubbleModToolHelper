@@ -7,3 +7,7 @@
 [submodule "deps/SonicAudioTools"]
 	path = deps/SonicAudioTools
 	url = https://github.com/datasone/SonicAudioTools
+[submodule "deps/Il2CppDumper"]
+	path = deps/Il2CppDumper
+	url = https://github.com/datasone/Il2CppDumper.git
+	branch = dumper_lib

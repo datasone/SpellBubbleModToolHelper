@@ -1,0 +1,5 @@
+<Directives>
+    <Application>
+        <Assembly Name="Il2CppDumper" Dynamic="Required All"/>
+    </Application>
+</Directives>
