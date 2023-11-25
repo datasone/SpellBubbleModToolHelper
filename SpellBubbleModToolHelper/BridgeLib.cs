@@ -10,22 +10,20 @@ namespace SpellBubbleModToolHelper;
 
 public static partial class BridgeLib
 {
-    private static string classPackagePath;
+    private static readonly Stream ClassPackageData = typeof(BridgeLib).Assembly.GetManifestResourceStream("SpellBubbleModToolHelper.classdata.tpk");
 
-    [UnmanagedCallersOnly(EntryPoint = "initialize")]
-    public static void Initialize(IntPtr classPackagePathPtr) // string classPackagePathPtr
+    static BridgeLib()
     {
         // Encoding Setup
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-        classPackagePath = Marshal.PtrToStringUTF8(classPackagePathPtr);
     }
 
     private static (AssetsManager, BundleFileInstance, AssetsFileInstance) LoadAssetsFromBundlePath(
         string assetBundlePath)
     {
         var am = new AssetsManager();
-        am.LoadClassPackage(classPackagePath);
+        am.LoadClassPackage(ClassPackageData);
+        ClassPackageData.Seek(0, SeekOrigin.Begin);
         var assetBundle = am.LoadBundleFile(assetBundlePath, true);
         am.LoadClassDatabaseFromPackage(am.LoadAssetsFileFromBundle(assetBundle, 0).file.typeTree.unityVersion);
         var assets = am.LoadAssetsFileFromBundle(assetBundle, 0);

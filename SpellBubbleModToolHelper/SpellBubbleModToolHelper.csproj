@@ -23,4 +23,9 @@
         <RdXmlFile Include="rd.xml"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="classdata.tpk" />
+      <EmbeddedResource Include="classdata.tpk" />
+    </ItemGroup>
+
 </Project>
